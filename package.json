@@ -1,0 +1,30 @@
+{
+  "name": "rudeweatherapp",
+  "description": "Rude Weather app",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "readme": "NativeScript Application",
+  "repository": "https://github.com/mickaelicoptere/rude-weather",
+  "nativescript": {
+    "id": "org.nativescript.rudeWeather",
+    "tns-ios": {
+      "version": "3.2.0"
+    },
+    "tns-android": {
+      "version": "3.4.2"
+    }
+  },
+  "dependencies": {
+    "nativescript-geolocation": "^4.2.6",
+    "nativescript-theme-core": "^1.0.4",
+    "nativescript-vue": "^0.1.16",
+    "tns-core-modules": "^3.0.0",
+    "vue-router": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-traverse": "6.24.1",
+    "babel-types": "6.24.1",
+    "babylon": "6.16.1",
+    "lazy": "1.0.11",
+    "nativescript-dev-android-snapshot": "^0.*.*"
+  }
+}
