@@ -3,9 +3,9 @@ const Geolocation = require("nativescript-geolocation");
 const Accuracy = require("ui/enums");
 const http = require("http");
 
-var lat = "37.422" ;
-var long = "-122.084" ;
-// var city = "Nice"
+// var lat = "37.422" ;
+// var long = "-122.084" ;
+var city = "Nice";
 
 let app = new Vue({
     data: () => {
@@ -20,6 +20,7 @@ let app = new Vue({
             day: '',
             time: '',
             image: '',
+            period: ''
         }
     },
     
@@ -34,7 +35,7 @@ let app = new Vue({
                 <grid-layout class="weather-box" columns="1*,1*" rows="auto">
                         <label col="0" row="0" class="large" :text="currentTemperature"></label>
                         <stack-layout col="1" row="0">
-                            <label class="small bold" text="details"></label>
+                            <label class="small bold" text="On s'en branle:"></label>
                             <stack-layout class="hr-light tight"></stack-layout>
                             <label class="small" :text="apparentTemperature"></label>
                             <label class="small" :text="humidity"></label>
@@ -48,12 +49,10 @@ let app = new Vue({
 
             <stack-layout class="hr-light"></stack-layout>
                 
-            <label :text="day"></label>
+            <label :text="period"></label>
                 
             <stack-layout class="hr-light"></stack-layout>                
-                
-            <label :text="time"></label>
-            
+                            
             </stack-layout>
          
         </grid-layout>
@@ -64,8 +63,6 @@ let app = new Vue({
     created() {
         // this.getMyWeather()
         this.getNiceWeather()
-        
-        //date manipulations
         var currentDate = new Date()
         var day = currentDate.getDay()
         var weekdays = new Array(7);
@@ -83,22 +80,22 @@ let app = new Vue({
         console.log(timeOfDay)
         this.day = dayName
         this.time = timeOfDay
+        this.period = dayName+" "+timeOfDay;
+        // this.city="Nice";
     },
     
     methods: { 
         getMyCity(){
             http.request({
-                // url: "https://nominatim.openstreetmap.org/reverse?format=json&lat="+lat+"&lon="+long+"&zoom=18&addressdetails=1",
-                // url: "https://api.darksky.net/forecast/5742899752b7f0bb326e13143c7393ed/"+lat+","+long,
-                // url: "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon=139&appid=20557fcccb4d7e13eae1d1412da2d295",
-                // url: "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=20557fcccb4d7e13eae1d1412da2d295",
-                url: "http://api.openweathermap.org/data/2.5/weather?lat=43.7&lon=7.25&appid=20557fcccb4d7e13eae1d1412da2d295", //coord @ Nice
+                // url: "http://api.openweathermap.org/data/2.5/weather?lat=43.7&lon=7.25&appid=20557fcccb4d7e13eae1d1412da2d295", //coord @ Nice
+                url: "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=20557fcccb4d7e13eae1d1412da2d295",
                 method: "GET"
             }).then(response => {
                 var obj = response.content.toJSON()
                 console.log("(getMyCity() city:");
                 console.log(obj.name);
-                this.city=obj.name;     
+                this.city=obj.name;
+                console.log("obj :"+JSON.stringify(obj));
             }) 
         },
         setImage(icon) {
@@ -139,7 +136,7 @@ let app = new Vue({
                   break;
             }
         },
-        getMyWeather() {
+        /*getMyWeather() {
             console.log("Géolocalisation askip");
             Geolocation.enableLocationRequest();
             console.log("geo request envoyé");
@@ -173,23 +170,22 @@ let app = new Vue({
                 console.log("loc: "+loc);
                 console.log("pas localisation");
             });
-        },
-
+        },*/
         getNiceWeather(){
             http.request({
                 // url: "https://api.forecast.io/forecast/c9002942b156fa5d0583934e2b1eced8/"+loc.latitude+","+loc.longitude,
                 url: "https://api.darksky.net/forecast/5742899752b7f0bb326e13143c7393ed/43.7,7.27?lang=fr&units=si",
-                method: "GET"
+                method: "GET" 
             }).then(response => {
                 console.log("réponse getniceweather -> darksky");
                 var obj = response.content.toJSON();
                 this.getMyCity();
                 this.summary = obj.currently.summary;
                 console.log(JSON.stringify(obj.currently))
-                this.humidity = 'humidity: '+obj.currently.humidity.toString()+'%';
-                this.windSpeed = 'wind: '+obj.currently.windSpeed.toString()+' km/h';
-                this.apparentTemperature = 'feels like: '+Math.round(obj.currently.apparentTemperature).toString() + '°C';
-                this.visibility = 'visibility: '+obj.currently.visibility.toString()+' m';
+                this.humidity = 'humidité: '+obj.currently.humidity.toString()+'%';
+                this.windSpeed = 'Vent: '+obj.currently.windSpeed.toString()+' km/h';
+                this.apparentTemperature = 'Ressenti: '+Math.round(obj.currently.apparentTemperature).toString() + '°C';
+                this.visibility = 'Visibilité: '+obj.currently.visibility.toString()+' m';
                 this.currentTemperature = Math.round(obj.currently.temperature).toString() + '°';
                 this.setImage(obj.currently.icon.toString());
             })
