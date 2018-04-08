@@ -6,26 +6,19 @@ Page {
 
 label {
     margin: 10 0;
-    font-family: "Quicksand";
+    font-family: "Helvetica";
     font-size: 20;
-    text-transform: uppercase; 
     text-align: center; 
 }
 
-.hr-light {
-    margin: 30 0;
-}
-
-.bold {
+.header {
+    font-family: "Helvetica";
     font-weight: bold;
+    font-size: 25;
 }
 
-.weather-image {
+.weather-icon {
     margin: 10 40;
-}
-
-.weather-box {
-    margin-top: 10;
 }
 
 .large {
@@ -34,11 +27,16 @@ label {
 }
 
 .small {
-    font-size: 15;
+    font-size: 25;
     margin: 0;
     text-align: left;
 }
 
 .tight {
     margin: 5
+}
+
+.caption {
+    font-size: 50;
+    margin-top: 120;
 }

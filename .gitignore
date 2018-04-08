@@ -3,3 +3,4 @@ platforms/
 hooks/
 app/App_Resources/
 .vscode/
+*.code-workspace

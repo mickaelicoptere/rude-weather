@@ -6,6 +6,7 @@ const http = require("http");
 // var lat = "37.422" ;
 // var long = "-122.084" ;
 var city = "Nice";
+var bgcolor="red";
 
 let app = new Vue({
     data: () => {
@@ -24,41 +25,29 @@ let app = new Vue({
         }
     },
     
-    template: `
-        <page>
-        <grid-layout rows="auto,*">
-            <stack-layout>
-                <label class="bold" :text="city"></label>
-                <label :text="summary"></label>
-                <image height="150" class="weather-image" :src="image"></image>
-                    
-                <grid-layout class="weather-box" columns="1*,1*" rows="auto">
-                        <label col="0" row="0" class="large" :text="currentTemperature"></label>
-                        <stack-layout col="1" row="0">
-                            <label class="small bold" text="On s'en branle:"></label>
-                            <stack-layout class="hr-light tight"></stack-layout>
-                            <label class="small" :text="apparentTemperature"></label>
-                            <label class="small" :text="humidity"></label>
-                            <label class="small" :text="windSpeed"></label>
-                            <label class="small" :text="visibility"></label>
-                        </stack-layout>                    
-                </grid-layout>
-            </stack-layout>
-            
-            <stack-layout row="1">
-
-            <stack-layout class="hr-light"></stack-layout>
-                
-            <label :text="period"></label>
-                
-            <stack-layout class="hr-light"></stack-layout>                
-                            
-            </stack-layout>
-         
-        </grid-layout>
-        
-        </page>
-    `,
+    template:`
+    <page :background="bgcolor">
+    <ActionBar text=" " :background="bgcolor" flat="true"/>
+    
+    <grid-layout rows="auto,*">
+        <stack-layout>
+            <label textWrap="true" class="header">
+                <Span :text="city" />
+                <Span text=", "/>
+                <Span :text="period"/>
+            </label>
+            <grid-layout columns="1*,1*" rows="auto">
+                <image col="0" row="0" height="180" class="weather-icon" :src="image"></image>
+                <label col="1" row="0" :text="currentTemperature" class="large"></label>
+            </grid-layout>
+            <DockLayout stretchLastChild="true">
+                <label dock="bottom" textWrap="true" :text="summary" class="caption"></label>
+            </DockLayout>
+        </stack-layout>
+     
+    </grid-layout>
+    
+    </page>`,
 
     created() {
         // this.getMyWeather()
@@ -81,6 +70,7 @@ let app = new Vue({
         this.day = dayName
         this.time = timeOfDay
         this.period = dayName+" "+timeOfDay;
+        this.bgcolor = bgcolor;
         // this.city="Nice";
     },
     
@@ -92,7 +82,7 @@ let app = new Vue({
                 method: "GET"
             }).then(response => {
                 var obj = response.content.toJSON()
-                console.log("(getMyCity() city:");
+                console.log("openweathermap api call :");
                 console.log(obj.name);
                 this.city=obj.name;
                 console.log("obj :"+JSON.stringify(obj));
@@ -103,36 +93,47 @@ let app = new Vue({
             switch(icon) {
                 case "partly-cloudy-day":
                   this.image = "~/images/cloudy.png";
+                  this.bgcolor="#95a5a6";
                   break;
                 case "partly-cloudy-night":
-                  this.image = "~/images/cloudy.png";       
+                  this.image = "~/images/cloudy.png";
+                  this.bgcolor="#95a5a6";       
                   break;
                 case "clear-day":
-                  this.image = "~/images/sunny.png";        
+                  this.image = "~/images/sunny.png";
+                  this.bgcolor="white";       
                   break;
                 case "sleet":
-                  this.image = "~/images/foggy.png";        
+                  this.image = "~/images/foggy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "snowy":
-                  this.image = "~/images/foggy.png";        
+                  this.image = "~/images/foggy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "wind":
-                  this.image = "~/images/foggy.png";        
+                  this.image = "~/images/foggy.png";
+                  this.bgcolor="#95a5a6";       
                   break;
                 case "rain":
-                  this.image = "~/images/rainy.png";        
+                  this.image = "~/images/rainy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "lightning":
-                  this.image = "~/images/rainy.png";        
+                  this.image = "~/images/rainy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "cloudy":
-                  this.image = "~/images/cloudy.png";        
+                  this.image = "~/images/cloudy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "fog":
-                  this.image = "~/images/foggy.png";        
+                  this.image = "~/images/foggy.png";
+                  this.bgcolor="#95a5a6";        
                   break;
                 case "clear-night":
-                  this.image = "~/images/sunny.png";        
+                  this.image = "~/images/sunny.png";
+                  this.bgcolor="#000080";        
                   break;
             }
         },
@@ -177,7 +178,7 @@ let app = new Vue({
                 url: "https://api.darksky.net/forecast/5742899752b7f0bb326e13143c7393ed/43.7,7.27?lang=fr&units=si",
                 method: "GET" 
             }).then(response => {
-                console.log("réponse getniceweather -> darksky");
+                console.log("darksky api call");
                 var obj = response.content.toJSON();
                 this.getMyCity();
                 this.summary = obj.currently.summary;
@@ -186,11 +187,10 @@ let app = new Vue({
                 this.windSpeed = 'Vent: '+obj.currently.windSpeed.toString()+' km/h';
                 this.apparentTemperature = 'Ressenti: '+Math.round(obj.currently.apparentTemperature).toString() + '°C';
                 this.visibility = 'Visibilité: '+obj.currently.visibility.toString()+' m';
-                this.currentTemperature = Math.round(obj.currently.temperature).toString() + '°';
+                this.currentTemperature = Math.round(obj.currently.temperature).toString() + '°C';
                 this.setImage(obj.currently.icon.toString());
             })
         }
     }
 })
-
 app.$start()
